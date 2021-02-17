@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/mypos_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/mypos_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ro.gabrielsolomon.mypos_flutter.mypos_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/ro.gabrielsolomon.mypos_flutter.mypos_flutter.iml" />
     </modules>
   </component>
 </project>

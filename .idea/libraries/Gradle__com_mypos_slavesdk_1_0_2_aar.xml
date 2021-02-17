@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.mypos:slavesdk:1.0.2@aar" type="AndroidModuleLibraryType">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9e5b99a6068d8033c40f0edd2008c9f4/jetified-slavesdk-1.0.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9e5b99a6068d8033c40f0edd2008c9f4/jetified-slavesdk-1.0.2/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9e5b99a6068d8033c40f0edd2008c9f4/jetified-slavesdk-1.0.2/jars/libs/GLComm_V1.05.00_20200331.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

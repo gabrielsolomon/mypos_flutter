@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mypos_flutter/currency.dart';
 import 'package:mypos_flutter/mypos_flutter.dart';
 
 void main() {
@@ -31,6 +32,8 @@ class _MyAppState extends State<MyApp> {
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
+
+    MyposFlutter.setCurrency(Currency.RON);
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
