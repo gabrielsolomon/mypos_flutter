@@ -9,3 +9,13 @@ Feel free to add your contribution to this project by submitting pull request or
 
 ## Getting Started
 
+
+## Methods supported
+- [x] POSHandler.setCurrency
+- [x] POSHandler.setApplicationContext
+- [x] POSHandler.clearDefaultReceiptConfig
+- [x] POSHandler.setLanguage
+- [x] POSHandler.setConnectionType
+- [x] POSHandler.connectDevice
+- [ ] POSHandler.isTerminalBusy
+- [ ] POSHandler.setConnectionListener
