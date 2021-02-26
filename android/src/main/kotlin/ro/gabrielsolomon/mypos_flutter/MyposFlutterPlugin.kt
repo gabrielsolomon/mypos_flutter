@@ -117,6 +117,11 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "setConnectionListener" -> setConnectionListener().flutterResult()
             "setPOSReadyListener" -> setPOSReadyListener().flutterResult()
             "connectDevice" -> connectDevice().flutterResult()
+            "purchase" -> purchase(
+                    call.argument<String?>("amount"),
+                    call.argument<String?>("tranRef"),
+                    call.argument<String?>("receiptConfiguration"))
+                    .flutterResult()
             else -> result.notImplemented()
         }
     }
@@ -261,6 +266,40 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
         try {
             POSHandler.getInstance().connectDevice(activity)
+            currentOp.response.status = true
+        } catch (e: Exception) {
+            currentOp.response.message = mutableMapOf("errors" to e.message)
+            currentOp.response.status = false
+        }
+        return currentOp
+    }
+
+    private fun purchase(
+            amount: String?,
+            tranRef: String?,
+            receiptConfiguration: String?
+    ): MyPosPluginResponseWrapper {
+        val currentOp = operations["purchase"]!!
+
+        try {
+
+            val receiptConfigurationInt : Int = when (receiptConfiguration) {
+                "ReceiptConfiguration.PRINT_AUTOMATICALLY" -> 0
+                "ReceiptConfiguration.PRINT_AFTER_CONFIRMATION" -> 1
+                "ReceiptConfiguration.PRINT_ONLY_MERCHANT_COPY" -> 2
+                "ReceiptConfiguration.DO_NOT_PRINT" -> 3
+                "ReceiptConfiguration.E_RECEIPT" -> 4
+
+                else -> 0
+            }
+
+            POSHandler.getInstance().purchase(
+                amount /*amount*/,
+                tranRef /*transaction reference*/,
+                receiptConfigurationInt /*receipt configuration*/
+            );
+
+            currentOp.response.message = mutableMapOf()
             currentOp.response.status = true
         } catch (e: Exception) {
             currentOp.response.message = mutableMapOf("errors" to e.message)

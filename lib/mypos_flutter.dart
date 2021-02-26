@@ -5,6 +5,7 @@ import 'package:mypos_flutter/MyPosPluginResponse.dart';
 import 'package:mypos_flutter/connection_type.dart';
 import 'package:mypos_flutter/currency.dart';
 import 'package:mypos_flutter/language.dart';
+import 'package:mypos_flutter/receipt_configuration.dart';
 
 class MyposFlutter {
   static const MethodChannel _channel = const MethodChannel('mypos_flutter');
@@ -65,6 +66,20 @@ class MyposFlutter {
     final response = MyPosPluginResponse.fromMap(
         await _channel.invokeMethod('setConnectionListener'));
     _eventChannelConnection.receiveBroadcastStream().listen(_listener);
+    return response;
+  }
+
+  static Future<MyPosPluginResponse> purchase(
+      String amount /*amount*/,
+      String tranRef /*transaction reference*/,
+      ReceiptConfiguration receiptConfiguration
+      /*receipt configuration*/) async {
+    final response = MyPosPluginResponse.fromMap(
+        await _channel.invokeMethod('purchase', <String, String>{
+      "amount": amount,
+      "tranRef": tranRef,
+      "receiptConfiguration": receiptConfiguration.toString()
+    }));
     return response;
   }
 }
