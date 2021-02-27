@@ -16,6 +16,9 @@ class MyposFlutter {
   static const EventChannel _eventChannelPOSReady =
       EventChannel('mypos_flutter.events.pos_ready');
 
+  static const EventChannel _eventChannelPOSInfo =
+      EventChannel('mypos_flutter.events.pos_info');
+
   StreamController<dynamic> _eventStreamController =
       StreamController.broadcast();
 
@@ -66,6 +69,13 @@ class MyposFlutter {
     final response = MyPosPluginResponse.fromMap(
         await _channel.invokeMethod('setConnectionListener'));
     _eventChannelConnection.receiveBroadcastStream().listen(_listener);
+    return response;
+  }
+
+  static Future<MyPosPluginResponse> setPOSInfoListener(_listener) async {
+    final response = MyPosPluginResponse.fromMap(
+        await _channel.invokeMethod('setPOSInfoListener'));
+    _eventChannelPOSInfo.receiveBroadcastStream().listen(_listener);
     return response;
   }
 

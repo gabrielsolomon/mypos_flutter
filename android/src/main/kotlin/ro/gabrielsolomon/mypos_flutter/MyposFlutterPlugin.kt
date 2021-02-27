@@ -5,10 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.NonNull
-import com.mypos.slavesdk.ConnectionType
-import com.mypos.slavesdk.Currency
-import com.mypos.slavesdk.Language
-import com.mypos.slavesdk.POSHandler
+import com.mypos.slavesdk.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -39,6 +36,7 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private var _eventSinkConnection: EventSink? = null
     private var _eventSinkPOSReady: EventSink? = null
+    private var _eventSinkPOSInfo: EventSink? = null
 
     private lateinit var activity: Activity
 
@@ -65,6 +63,17 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         eventChannelPOSReady.setStreamHandler(object : EventChannel.StreamHandler {
             override fun onListen(arguments: Any?, eventSink: EventSink?) {
                 _eventSinkPOSReady = eventSink;
+            }
+
+            override fun onCancel(arguments: Any?) {
+                TODO("Not yet implemented")
+            }
+        })
+
+        val eventChannelPOSInfo = EventChannel(flutterPluginBinding.binaryMessenger, "mypos_flutter.events.pos_info")
+        eventChannelPOSInfo.setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(arguments: Any?, eventSink: EventSink?) {
+                _eventSinkPOSInfo = eventSink;
             }
 
             override fun onCancel(arguments: Any?) {
@@ -116,6 +125,7 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "clearDefaultReceiptConfig" -> clearDefaultReceiptConfig().flutterResult()
             "setConnectionListener" -> setConnectionListener().flutterResult()
             "setPOSReadyListener" -> setPOSReadyListener().flutterResult()
+            "setPOSInfoListener" -> setPOSInfoListener().flutterResult()
             "connectDevice" -> connectDevice().flutterResult()
             "purchase" -> purchase(
                     call.argument<String?>("amount"),
@@ -259,6 +269,42 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         return currentOp
     }
 
+    private fun setPOSInfoListener(): MyPosPluginResponseWrapper {
+        val currentOp = operations["setPOSInfoListener"]!!
+
+        try {
+            POSHandler.getInstance()!!.setPOSInfoListener(object : POSInfoListener {
+                override fun onPOSInfoReceived(command: Int, status: Int, description: String) {
+                    val map: MutableMap<String, Any?> = HashMap()
+                    map["event"] = "onPOSInfoReceived";
+                    map["command"] = command;
+                    map["status"] = status;
+                    map["description"] = description;
+                    uiThreadHandler.post { _eventSinkPOSInfo?.success(map) }
+                }
+
+                override fun onTransactionComplete(transactionData: TransactionData) {
+                    val map: MutableMap<String, Any?> = HashMap()
+                    map["event"] = "onTransactionComplete";
+                    map["transactionData"] = transactionData;
+                    uiThreadHandler.post { _eventSinkPOSInfo?.success(map) }
+                }
+            })
+
+            POSHandler.getInstance().setPOSReadyListener {
+
+                val map: MutableMap<String, Any?> = HashMap()
+                map["event"] = "onPOSReady";
+                uiThreadHandler.post { this._eventSinkPOSReady?.success(map) }
+            }
+            currentOp.response.status = true
+        } catch (e: Exception) {
+            currentOp.response.message = mutableMapOf("errors" to e.message)
+            currentOp.response.status = false
+        }
+        return currentOp
+    }
+
     private fun connectDevice(): MyPosPluginResponseWrapper {
         val currentOp = operations["connectDevice"]!!
 
@@ -294,9 +340,9 @@ class MyposFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
 
             POSHandler.getInstance().purchase(
-                amount /*amount*/,
-                tranRef /*transaction reference*/,
-                receiptConfigurationInt /*receipt configuration*/
+                    amount /*amount*/,
+                    tranRef /*transaction reference*/,
+                    receiptConfigurationInt /*receipt configuration*/
             );
 
             currentOp.response.message = mutableMapOf()

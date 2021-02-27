@@ -3,6 +3,7 @@ import 'package:mypos_flutter/connection_type.dart';
 import 'package:mypos_flutter/currency.dart';
 import 'package:mypos_flutter/language.dart';
 import 'package:mypos_flutter/mypos_flutter.dart';
+import 'package:mypos_flutter/pos_info_states.dart';
 
 import 'app_state.dart';
 
@@ -45,6 +46,18 @@ class InitScreen extends StatelessWidget {
       print(event);
       print("-----------------------");
       _stateCallback(ApplicationState.Ready);
+    });
+
+    MyposFlutter.setPOSInfoListener((dynamic event) {
+      print("POS INFO FLUTTER");
+      print(event);
+      var state = PosInfoState.fromEvent(event);
+      print("-----------------------");
+      print(state);
+      print(state.status_code);
+      print(state.message);
+      print("-----------------------");
+      // _stateCallback(ApplicationState.Ready);
     });
   }
 }
