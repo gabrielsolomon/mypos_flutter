@@ -1,7 +1,8 @@
 name: mypos_flutter
 description: Bridge with native MyPos SDK to connect to payment terminals
 version: 0.1.0
-author: Gabriel Solomon <hello@gabrielsolomon.ro>
+authors:
+  - Gabriel Solomon <solomongaby@gmail.com>
 homepage: https://github.com/gabrielsolomon/mypos_flutter
 
 environment:
